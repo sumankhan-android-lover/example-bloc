@@ -1,7 +1,8 @@
-import 'package:ecommarce/common_widget/common_svgicon.dart';
+import 'package:ecommarce/features/common_widget/common_svgicon.dart';
 import 'package:ecommarce/features/home/favourite/bloc/favourite_bloc.dart';
 import 'package:ecommarce/features/home/favourite/model/favourite/favorite_model.dart';
 import 'package:ecommarce/helpers/color_config.dart';
+import 'package:ecommarce/helpers/common_function.dart';
 import 'package:ecommarce/helpers/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,9 @@ class _FavouritePageState extends State<FavouritePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0x0d53b175),
-      appBar: detailsAppBar(title),
+      appBar: commonAppBar(title, isAction: true, callback: () {
+        favouriteBloc?.add(ClearAllFavouritesEvent());
+      }),
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,

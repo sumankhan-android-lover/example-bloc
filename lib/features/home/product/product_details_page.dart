@@ -1,15 +1,19 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:ecommarce/common_widget/common_svgicon.dart';
-import 'package:ecommarce/common_widget/readmoreText.dart';
+import 'package:ecommarce/features/common_widget/common_svgicon.dart';
+import 'package:ecommarce/features/common_widget/readmoreText.dart';
 import 'package:ecommarce/features/home/cart/bloc/cart_bloc.dart';
+import 'package:ecommarce/features/home/cart/bloc/cart_event.dart';
+import 'package:ecommarce/features/home/cart/bloc/cart_state.dart';
 import 'package:ecommarce/features/home/cart/model/add_cart_data_model.dart';
+import 'package:ecommarce/features/home/cart/model/cart_data_model.dart';
 import 'package:ecommarce/features/home/product/bloc/product_bloc/product_bloc.dart';
 import 'package:ecommarce/features/home/product/bloc/product_bloc/product_event.dart';
 import 'package:ecommarce/features/home/product/bloc/product_bloc/product_state.dart';
 import 'package:ecommarce/features/home/product/model/product_data_model.dart';
 import 'package:ecommarce/helpers/color_config.dart';
+import 'package:ecommarce/helpers/common_function.dart';
 import 'package:ecommarce/helpers/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +35,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   String productCount = "1";
   ProductDataModel? productDetails;
-  AddCartDataModel? addCartDataModel;
+  // AddCartDataModel? addCartDataModel;
 
   @override
   void initState() {
@@ -50,17 +54,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0x0d53b175),
-      appBar: detailsAppBar(widget.dataModel.title!),
+      appBar: commonAppBar(widget.dataModel.title!),
       body: productDetailsWidget(),
     );
   }
 
-  AppBar detailsAppBar(String title) => AppBar(
+/*  AppBar detailsAppBar(String title) => AppBar(
         title: Text(
           title, style: TextStyleTypography.typoBoldStyle16.copyWith(color: Colors.white),
         ),
         backgroundColor: AppThemeColor.primaryColor,
-      );
+      );*/
 
   Widget productDetailsWidget() => BlocBuilder<ProductBloc, ProductState>(
         builder: (BuildContext context, ProductState state) {
@@ -183,8 +187,18 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       const Spacer(),
                       FilledButton(
                           onPressed: () {
-                            Map<String, dynamic> data = {"productId": 5, "quantity": 2};
-                            cartBloc?.add(AddToCartEvent(1, data, "2020-02-03"));
+                            // Map<String, dynamic> data = {"productId": 5, "quantity": 2};
+                            // cartBloc?.add(AddToCartEvent(1, data, "2020-02-03"));
+                            final addItem = CartDataModel(
+                              count: int.parse(productCount),
+                              image: productDetails?.image,
+                              description: productDetails?.description,
+                              category: productDetails?.category,
+                              id: productDetails?.id,
+                              price: productDetails?.price,
+                              title: productDetails?.title,
+                            );
+                            cartBloc?.add(AddToCartEvent(addItem));
                           },
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all<Color>(AppThemeColor.primaryColor),
@@ -276,8 +290,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Widget buttonTextWidget() => BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
+          Map<String, dynamic> success = {};
+
           if (state is AddToCartState) {
-            addCartDataModel = state.model;
+            // addCartDataModel = state.model;
+            success = state.data;
           }
 
           if (state is CartErrorState) {
@@ -287,50 +304,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           }
 
           return Text(
-            addCartDataModel != null ? "Go to cart" : "Add to cart",
+            success.isNotEmpty && success['status'] == true ? "Go to cart" : "Add to cart",
             style: TextStyleTypography.typoBoldStyle14.copyWith(color: Colors.white),
           );
         },
       );
-
-/*  Widget goToCartButtonWidget() => BlocBuilder<CartBloc, CartState>(
-        builder: (context, state) {
-          if (state is AddToCartState) {
-            addCartDataModel = state.model;
-          }
-
-          if (state is CartErrorState) {
-            return Center(
-              child: Text(state.error),
-            );
-          }
-
-          return FilledButton(
-            onPressed: () {
-              Map<String, dynamic> data = {"productId": 1, "quantity": 2};
-              //cartBloc?.add(AddToCartEvent(1, data, "2020-02-03"));
-              BlocProvider.of<CartBloc>(context).add(AddToCartEvent(1, data, "2020-02-03"));
-            },
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all<Color>(AppThemeColor.primaryColor),
-              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // Rounded corners
-                ),
-              ),
-              padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-                const EdgeInsets.only(top: 20, bottom: 20, right: 24, left: 24), // Padding inside the button
-              ),
-              shadowColor: WidgetStateProperty.all<Color>(Colors.grey),
-              elevation: WidgetStateProperty.all<double>(4.0),
-            ),
-            child: Text(
-              addCartDataModel != null ? "Add to cart" : "Go to cart",
-              style: TextStyleTypography.typoBoldStyle14.copyWith(color: Colors.white),
-            ),
-          );
-        },
-      );*/
 
   @override
   void dispose() {

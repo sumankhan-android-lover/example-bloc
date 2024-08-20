@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ecommarce/data/network/home_repository.dart';
+import 'package:ecommarce/data/network/repository/home_repository.dart';
 import 'package:ecommarce/features/home/product/bloc/product_bloc/product_event.dart';
 import 'package:ecommarce/features/home/product/bloc/product_bloc/product_state.dart';
 import 'package:ecommarce/features/home/product/model/product_data_model.dart';

@@ -1,4 +1,4 @@
-import 'package:ecommarce/common_widget/common_svgicon.dart';
+import 'package:ecommarce/features/common_widget/common_svgicon.dart';
 import 'package:ecommarce/features/home/favourite/bloc/favourite_bloc.dart';
 import 'package:ecommarce/features/home/favourite/model/favourite/favorite_model.dart';
 import 'package:ecommarce/features/home/product/bloc/product_bloc/product_bloc.dart';

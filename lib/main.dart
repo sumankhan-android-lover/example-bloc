@@ -1,8 +1,9 @@
+import 'package:ecommarce/data/local/repository/cart_repository.dart';
 import 'package:ecommarce/data/local/repository/favorite_repository.dart';
-import 'package:ecommarce/data/network/cart_repository.dart';
-import 'package:ecommarce/data/network/category_repository.dart';
-import 'package:ecommarce/data/network/home_repository.dart';
+import 'package:ecommarce/data/network/repository/category_repository.dart';
+import 'package:ecommarce/data/network/repository/home_repository.dart';
 import 'package:ecommarce/features/home/cart/bloc/cart_bloc.dart';
+import 'package:ecommarce/features/home/cart/model/cart_data_model.dart';
 import 'package:ecommarce/features/home/explore/bloc/category_bloc/category_bloc.dart';
 import 'package:ecommarce/features/home/explore/bloc/category_item_bloc/category_item_bloc.dart';
 import 'package:ecommarce/features/home/favourite/bloc/favourite_bloc.dart';
@@ -23,19 +24,23 @@ void main() async {
   // Register the adapters
   Hive.registerAdapter(FavoriteModelAdapter());
   Hive.registerAdapter(RatingAdapter());
+  Hive.registerAdapter(CartDataModelAdapter());
   // Open the Hive box to store FavoriteModel objects
   var favoriteBox = await Hive.openBox<FavoriteModel>(Globals.favoriteBox);
+  var cartBox = await Hive.openBox<CartDataModel>(Globals.cartBox);
 
+  ///network
   final HomeRepository homeRepository = HomeRepository();
-  final CartRepository cartRepository = CartRepository();
   final CategoryRepository categoryRepository = CategoryRepository();
+  ///local
   final FavoriteRepository favoriteRepository = FavoriteRepository(favoriteBox);
+  final CartRepository cartRepository = CartRepository(cartBox);
 
   runApp(MyApp(
     homeRepository: homeRepository,
-    cartRepository: cartRepository,
     categoryRepository: categoryRepository,
     favoriteRepository: favoriteRepository,
+    cartRepository: cartRepository,
   ));
 }
 

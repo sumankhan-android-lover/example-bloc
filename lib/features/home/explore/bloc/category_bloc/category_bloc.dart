@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:ecommarce/data/network/category_repository.dart';
+import 'package:ecommarce/data/network/repository/category_repository.dart';
 import 'package:flutter/material.dart';
 
 part 'category_event.dart';
