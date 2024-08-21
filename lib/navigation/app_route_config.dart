@@ -14,85 +14,10 @@ class AppRouteConfig {
   static final AppRouteConfig _instance = AppRouteConfig._internal();
 
   static AppRouteConfig get instance => _instance;
+  static late final GoRouter router;
 
   static final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(); // Make it static
-
-  static final GoRouter router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRouteConstantPath.home,
-    debugLogDiagnostics: true,
-    routes: <RouteBase>[
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey, // Now this works because _shellNavigatorKey is static
-        builder: (BuildContext context, GoRouterState state, Widget child) {
-          return BottomNavigationPage(child: child);
-        },
-        routes: <RouteBase>[
-          GoRoute(
-            path: AppRouteConstantPath.home,
-            name: AppRouteConstantName.home,
-            builder: (BuildContext context, GoRouterState state) {
-              return const ProductPage();
-            },
-          ),
-          GoRoute(
-            path: AppRouteConstantPath.explore,
-            name: AppRouteConstantName.explore,
-            builder: (BuildContext context, GoRouterState state) {
-              return const ExplorePage();
-            },
-            // routes: <RouteBase> [
-            //   GoRoute(
-            //     parentNavigatorKey: _rootNavigatorKey,
-            //     name: AppRouteConstantName.exploreItemList,
-            //     path: AppRouteConstantPath.exploreItemList,
-            //     builder: (context, state) {
-            //       String data = state.extra as String;
-            //       return ExploreItemListPage(path: data,);
-            //     },
-            //   ),
-            // ]
-          ),
-
-          GoRoute(
-            name: AppRouteConstantName.exploreItemList,
-            path: AppRouteConstantPath.exploreItemList,
-            builder: (context, state) {
-              String data = state.extra as String;
-              return ExploreItemListPage(path: data,);
-            },
-          ),
-
-          GoRoute(
-            path: AppRouteConstantPath.cart,
-            name: AppRouteConstantName.cart,
-            builder: (BuildContext context, GoRouterState state) {
-              return const CartPage();
-            },
-          ),
-
-          GoRoute(
-            path: AppRouteConstantPath.favourite,
-            name: AppRouteConstantName.favourite,
-            builder: (BuildContext context, GoRouterState state) {
-              return const FavouritePage();
-            },
-          ),
-
-          GoRoute(
-            path: AppRouteConstantPath.productDetails,
-            name: AppRouteConstantName.productDetails,
-            builder: (BuildContext context, GoRouterState state) {
-              ProductDataModel model = state.extra as ProductDataModel;
-              return ProductDetailsPage(dataModel: model,);
-            },
-          ),
-
-        ],
-      ),
-    ],
-  );
+  final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   BuildContext get context => router.routerDelegate.navigatorKey.currentContext!;
 
@@ -103,5 +28,70 @@ class AppRouteConfig {
     return _instance;
   }
 
-  AppRouteConfig._internal();
+  AppRouteConfig._internal() {
+    router = GoRouter(
+      navigatorKey: _rootNavigatorKey,
+      initialLocation: AppRouteConstantPath.home,
+      debugLogDiagnostics: true,
+      routes: <RouteBase>[
+        ShellRoute(
+          navigatorKey: _shellNavigatorKey, // Now this works because _shellNavigatorKey is static
+          builder: (BuildContext context, GoRouterState state, Widget child) {
+            return BottomNavigationPage(child: child);
+          },
+          routes: <RouteBase>[
+            GoRoute(
+              path: AppRouteConstantPath.home,
+              name: AppRouteConstantName.home,
+              builder: (BuildContext context, GoRouterState state) {
+                return const ProductPage();
+              },
+            ),
+            GoRoute(
+              path: AppRouteConstantPath.explore,
+              name: AppRouteConstantName.explore,
+              builder: (BuildContext context, GoRouterState state) {
+                return const ExplorePage();
+              },
+            ),
+
+            GoRoute(
+              name: AppRouteConstantName.exploreItemList,
+              path: AppRouteConstantPath.exploreItemList,
+              builder: (context, state) {
+                String data = state.extra as String;
+                return ExploreItemListPage(path: data,);
+              },
+            ),
+
+            GoRoute(
+              path: AppRouteConstantPath.cart,
+              name: AppRouteConstantName.cart,
+              builder: (BuildContext context, GoRouterState state) {
+                return const CartPage();
+              },
+            ),
+
+            GoRoute(
+              path: AppRouteConstantPath.favourite,
+              name: AppRouteConstantName.favourite,
+              builder: (BuildContext context, GoRouterState state) {
+                return const FavouritePage();
+              },
+            ),
+
+            GoRoute(
+              path: AppRouteConstantPath.productDetails,
+              name: AppRouteConstantName.productDetails,
+              builder: (BuildContext context, GoRouterState state) {
+                ProductDataModel model = state.extra as ProductDataModel;
+                return ProductDetailsPage(dataModel: model,);
+              },
+            ),
+
+          ],
+        ),
+      ],
+    );
+  }
 }

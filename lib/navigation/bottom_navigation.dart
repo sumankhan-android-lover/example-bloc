@@ -1,98 +1,101 @@
 import 'package:ecommarce/features/common_widget/common_svgicon.dart';
 import 'package:ecommarce/helpers/color_config.dart';
+import 'package:ecommarce/helpers/constant.dart';
 import 'package:ecommarce/navigation/app_route_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomNavigationPage extends StatelessWidget {
+  final Widget child;
+
   const BottomNavigationPage({
     required this.child,
     super.key,
   });
 
-  final Widget child;
-
   @override
   Widget build(BuildContext context) {
+    final int currentIndex = _calculateSelectedIndex(context);
+
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.red,
-        items: <BottomNavigationBarItem> [
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex,
+        onTap: (int idx) => _onItemTapped(idx, context),
+        selectedItemColor: AppThemeColor.primaryColor,
+        unselectedItemColor: AppThemeColor.deepBlue,
+        selectedLabelStyle: TextStyleTypography.typoBoldStyle12.copyWith(color: AppThemeColor.primaryColor, fontSize: 10),
+        unselectedLabelStyle: TextStyleTypography.typoBoldStyle12.copyWith(color: AppThemeColor.deepBlue, fontSize: 10),
+        items: [
           BottomNavigationBarItem(
             icon: CommonSVGIcon(
-              // width: Globals.tabIconSize,
-              // height: Globals.tabIconSize,
               imageName: 'tab_icon_shop',
               imagePath: 'icon',
-              color: _calculateSelectedIndex(context) == 0 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
+              color: currentIndex == 0 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
             ),
             label: 'Shop',
           ),
           BottomNavigationBarItem(
             icon: CommonSVGIcon(
-              // width: Globals.tabIconSize,
-              // height: Globals.tabIconSize,
               imageName: 'tab_icon_explore',
               imagePath: 'icon',
-              color: _calculateSelectedIndex(context) == 1 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
+              color: currentIndex == 1 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
             ),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
             icon: CommonSVGIcon(
-              // width: Globals.tabIconSize,
-              // height: Globals.tabIconSize,
               imageName: 'tab_icon_cart',
               imagePath: 'icon',
-              color: _calculateSelectedIndex(context) == 2 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
+              color: currentIndex == 2 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
             ),
             label: 'Cart',
           ),
           BottomNavigationBarItem(
             icon: CommonSVGIcon(
-              // width: Globals.tabIconSize,
-              // height: Globals.tabIconSize,
               imageName: 'tab_icon_favourite',
               imagePath: 'icon',
-              color: _calculateSelectedIndex(context) == 3 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
+              color: currentIndex == 3 ? AppThemeColor.primaryColor : AppThemeColor.deepBlue,
             ),
             label: 'Favourite',
           ),
         ],
-        currentIndex: _calculateSelectedIndex(context),
-        onTap: (int idx) => _onItemTapped(idx, context),
       ),
     );
   }
 
   static int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.path;
-    if (location.startsWith(AppRouteConstantName.home)) {
+    final String location = GoRouterState.of(context).uri.toString();
+    if (location == AppRouteConstantPath.home) {
       return 0;
     }
-    if (location.startsWith(AppRouteConstantName.explore)) {
+    if (location == AppRouteConstantPath.explore) {
       return 1;
     }
-    if (location.startsWith(AppRouteConstantName.cart)) {
+    if (location == AppRouteConstantPath.cart) {
       return 2;
     }
-    if (location.startsWith(AppRouteConstantName.favourite)) {
+    if (location == AppRouteConstantPath.favourite) {
       return 3;
     }
-    return 0;
+    return 0; // Default case
   }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        GoRouter.of(context).goNamed(AppRouteConstantName.home);
+        GoRouter.of(context).go(AppRouteConstantPath.home);
+        break;
       case 1:
-        GoRouter.of(context).goNamed(AppRouteConstantName.explore);
+        GoRouter.of(context).go(AppRouteConstantPath.explore);
+        break;
       case 2:
-        GoRouter.of(context).goNamed(AppRouteConstantName.cart);
+        GoRouter.of(context).go(AppRouteConstantPath.cart);
+        break;
       case 3:
-        GoRouter.of(context).goNamed(AppRouteConstantName.favourite);
+        GoRouter.of(context).go(AppRouteConstantPath.favourite);
+        break;
     }
   }
 }
