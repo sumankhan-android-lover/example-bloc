@@ -48,6 +48,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }*/
 
   FutureOr<void> addToCart(AddToCartEvent event, Emitter<CartState> emit) async{
+    emit(CartInitialState());
     try{
       Map<String, dynamic>? data = await repository?.addItem(event.item);
       debugPrint("Bloc: data - ${json.encode(data)}");

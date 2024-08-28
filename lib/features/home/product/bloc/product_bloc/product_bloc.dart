@@ -41,6 +41,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   FutureOr<void> fetchProductDetails(FetchProductDetailsEvent event, Emitter<ProductState> emit) async {
     emit(ProductInitialState());
     // debugPrint("fetchProductDetails");
+
+    // Reset item count and button states when fetching new product details
+    itemCount = 1;
+    plusButtonDisabled = false;
+    minusButtonDisabled = true;
+
     try {
       ProductDataModel? datum = await repository?.fetchProductDetails(event.productId);
       // debugPrint("fetchProductDetails data - $datum");

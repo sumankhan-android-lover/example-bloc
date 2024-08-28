@@ -1,4 +1,5 @@
 import 'package:ecommarce/features/common_widget/common_svgicon.dart';
+import 'package:ecommarce/features/dialog/order_success_dialog.dart';
 import 'package:ecommarce/features/home/cart/bloc/cart_bloc.dart';
 import 'package:ecommarce/features/home/cart/bloc/cart_event.dart';
 import 'package:ecommarce/features/home/cart/bloc/cart_state.dart';
@@ -80,7 +81,10 @@ class _CartPageState extends State<CartPage> {
                     ),
                     const Spacer(),
                     FilledButton(
-                    onPressed: cartBloc!.totalPrice > 0.00 ? () {} : null,
+                    onPressed: cartBloc!.totalPrice > 0.00 ? /*() as{
+                      showBuySuccessfulDialog();
+                      cartBloc?.add(ClearCartEvent());
+                    }*/ showBuySuccessfulDialog : null,
                     style: ButtonStyle(
                       backgroundColor: cartBloc!.totalPrice > 0.00 ? WidgetStateProperty.all<Color>(AppThemeColor.primaryColor) : WidgetStateProperty.all<Color>(Colors.grey),
                       // Button background color
@@ -286,5 +290,19 @@ class _CartPageState extends State<CartPage> {
     cartData.count = cartData.count == 1 ? 1 : cartData.count! - 1;
     debugPrint("minus data - ${cartData.count}");
     cartBloc?.add(UpdateCartEvent(cartData, "minus"));
+  }
+
+  showBuySuccessfulDialog() async {
+    return showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "XYZ",
+      barrierColor: Colors.black.withOpacity(0.7),
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return const Align(
+          alignment: Alignment.center,
+          child: OrderSuccessDialog(),
+        );
+      },);
   }
 }

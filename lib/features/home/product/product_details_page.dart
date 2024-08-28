@@ -15,10 +15,12 @@ import 'package:ecommarce/features/home/product/model/product_data_model.dart';
 import 'package:ecommarce/helpers/color_config.dart';
 import 'package:ecommarce/helpers/common_function.dart';
 import 'package:ecommarce/helpers/constant.dart';
+import 'package:ecommarce/navigation/app_route_constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   ProductDataModel dataModel;
@@ -35,7 +37,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   String productCount = "1";
   ProductDataModel? productDetails;
-  // AddCartDataModel? addCartDataModel;
+
+  bool plusButtonDisabled = false;
+  bool minusButtonDisabled = false;
+  String cartButtonText = "Add to cart";
 
   @override
   void initState() {
@@ -47,6 +52,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    cartButtonText = "Add to cart";
     productBloc?.add(FetchProductDetailsEvent(widget.dataModel.id));
   }
 
@@ -59,16 +65,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-/*  AppBar detailsAppBar(String title) => AppBar(
-        title: Text(
-          title, style: TextStyleTypography.typoBoldStyle16.copyWith(color: Colors.white),
-        ),
-        backgroundColor: AppThemeColor.primaryColor,
-      );*/
-
   Widget productDetailsWidget() => BlocBuilder<ProductBloc, ProductState>(
         builder: (BuildContext context, ProductState state) {
           if (state is ProductLoadingState || state is ProductInitialState) {
+
             return const Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2.0,
@@ -78,6 +78,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           }
 
           if (state is FetchProductDetailsState) {
+            productCount = "1";
+            cartButtonText = "Add to cart";
+            plusButtonDisabled = productBloc!.plusButtonDisabled;
+            minusButtonDisabled = productBloc!.minusButtonDisabled;
+
             productDetails = state.productDetails;
             // debugPrint("product details - ${jsonEncode(productDetails)}");
           }
@@ -165,13 +170,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           textAlign: TextAlign.start,
                           style: TextStyleTypography.typoMediumStyle14,
                         ),
-                        // const SizedBox(
-                        //   height: 8,
-                        // ),
                         const Divider(),
-                        // const SizedBox(
-                        //   height: 8,
-                        // ),
                       ],
                     ),
                   ),
@@ -189,16 +188,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           onPressed: () {
                             // Map<String, dynamic> data = {"productId": 5, "quantity": 2};
                             // cartBloc?.add(AddToCartEvent(1, data, "2020-02-03"));
-                            final addItem = CartDataModel(
-                              count: int.parse(productCount),
-                              image: productDetails?.image,
-                              description: productDetails?.description,
-                              category: productDetails?.category,
-                              id: productDetails?.id,
-                              price: productDetails?.price,
-                              title: productDetails?.title,
-                            );
-                            cartBloc?.add(AddToCartEvent(addItem));
+
+                            if(cartButtonText == "Go to cart"){
+                              context.push(AppRouteConstantPath.cart);
+                            }else{
+                              final addItem = CartDataModel(
+                                count: int.parse(productCount),
+                                image: productDetails?.image,
+                                description: productDetails?.description,
+                                category: productDetails?.category,
+                                id: productDetails?.id,
+                                price: productDetails?.price,
+                                title: productDetails?.title,
+                              );
+                              cartBloc?.add(AddToCartEvent(addItem));
+                            }
                           },
                           style: ButtonStyle(
                             backgroundColor: WidgetStateProperty.all<Color>(AppThemeColor.primaryColor),
@@ -228,8 +232,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Widget plusMinusWidget() => BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
-          bool plusButtonDisabled = false;
-          bool minusButtonDisabled = false;
 
           if (state is PlusMinusClickState) {
             plusButtonDisabled = state.plusButtonDisabled;
@@ -290,11 +292,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Widget buttonTextWidget() => BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
-          Map<String, dynamic> success = {};
 
           if (state is AddToCartState) {
-            // addCartDataModel = state.model;
-            success = state.data;
+            cartButtonText = "Go to cart";
           }
 
           if (state is CartErrorState) {
@@ -303,8 +303,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             );
           }
 
-          return Text(
-            success.isNotEmpty && success['status'] == true ? "Go to cart" : "Add to cart",
+          return Text(cartButtonText,
             style: TextStyleTypography.typoBoldStyle14.copyWith(color: Colors.white),
           );
         },
@@ -314,6 +313,5 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   void dispose() {
     super.dispose();
     productCount = "1";
-    // cartBloc?.dispatch();
   }
 }
