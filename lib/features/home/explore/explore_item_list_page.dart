@@ -65,7 +65,7 @@ class _ExploreItemListPageState extends State<ExploreItemListPage> {
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // Number of columns
-                childAspectRatio: 2 / 3, // Aspect ratio of each item
+                childAspectRatio: 2 / 2, // Aspect ratio of each item
               ),
               itemCount: productItems.isNotEmpty ? productItems.length : 0,
               shrinkWrap: true,
@@ -106,14 +106,14 @@ class _ExploreItemListPageState extends State<ExploreItemListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: SizedBox(
-                      height: 120,
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: Stack(
-                        children: [
-                          Image.network(
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: MediaQuery.sizeOf(context).height*0.2,
+                          width:  MediaQuery.sizeOf(context).height*0.7,
+                          child: Image.network(
                             '${productItem.image}',
-                            fit: BoxFit.fill,
+                            // fit: BoxFit.fill,
                             loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null) {
                                 return child;
@@ -129,8 +129,8 @@ class _ExploreItemListPageState extends State<ExploreItemListPage> {
                               return const Text('Failed');
                             },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(

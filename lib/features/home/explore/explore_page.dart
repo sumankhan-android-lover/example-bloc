@@ -19,6 +19,7 @@ class _ExplorePageState extends State<ExplorePage> {
   CategoryBloc? categoryBloc;
   List<String> categoryList = [];
   List<String> get categoryImageList => ['${path}icon_electronics.png', '${path}icon_jewelery.png', '${path}icon_men.png', '${path}icon_women.png'];
+  //List<String> categoryImageList = ['assets/images/png/icon_electronics.png', 'assets/images/png/icon_jewelery.png', 'assets/images/png/icon_men.png', 'assets/images/png/icon_women.png'];
 
   @override
   void initState() {
@@ -101,7 +102,7 @@ class _ExplorePageState extends State<ExplorePage> {
                 flex: 90,
                 child: Padding(
                   padding: EdgeInsets.all(MediaQuery.sizeOf(context).width/12),
-                  child: Image.network(
+                  child: Image.asset(
                     category == "electronics"
                         ? categoryImageList[0]
                         : category == "jewelery"

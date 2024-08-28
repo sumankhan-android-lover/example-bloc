@@ -81,7 +81,7 @@ class _ProductPageState extends State<ProductPage> {
                 crossAxisCount: 2, // Number of columns
                 // crossAxisSpacing: 6.0,  // Space between columns
                 // mainAxisSpacing: 6.0,  // Space between rows
-                childAspectRatio: 2 / 3, // Aspect ratio of each item
+                childAspectRatio: 2 / 2, // Aspect ratio of each item
               ),
               itemCount: productItems.isNotEmpty ? productItems.length : 0,
               shrinkWrap: true,
@@ -114,14 +114,14 @@ class _ProductPageState extends State<ProductPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: SizedBox(
-                      height: 120,
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: Stack(
-                        children: [
-                          Image.network(
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: MediaQuery.sizeOf(context).height*0.2,
+                          width:  MediaQuery.sizeOf(context).height*0.7,
+                          child: Image.network(
                             '${productItem.image}',
-                            fit: BoxFit.fill,
+                            // fit: BoxFit.fill,
                             loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null) {
                                 return child;
@@ -137,51 +137,51 @@ class _ProductPageState extends State<ProductPage> {
                               return const Text('Failed');
                             },
                           ),
-                          Positioned(
-                            top: 0.0,
-                            right: 0.0,
-                            child: InkWell(
-                              onTap: () {
-                                final newItem = FavoriteModel(
-                                  id: productItem.id,
-                                  title: productItem.title,
-                                  price: productItem.price,
-                                  description: productItem.description,
-                                  category: productItem.category,
-                                  image: productItem.image,
+                        ),
+                        Positioned(
+                          top: 0.0,
+                          right: 0.0,
+                          child: InkWell(
+                            onTap: () {
+                              final newItem = FavoriteModel(
+                                id: productItem.id,
+                                title: productItem.title,
+                                price: productItem.price,
+                                description: productItem.description,
+                                category: productItem.category,
+                                image: productItem.image,
+                              );
+                              favouriteBloc?.add(AddRemoveFavouriteEvent(newItem));
+                            },
+                            child: BlocBuilder<FavouriteBloc, FavouriteState>(
+                              builder: (context, state) {
+                                //bool isFavorite = false;
+                                String imageName;
+
+                                //if (state is LoadedFavouriteState) {
+                                //isFavorite = state.items.any((item) => item.id == productItem.id);
+                                //debugPrint("Favorite status for ${productItem.title}: $isFavorite");
+                                //}
+                                //String imageName = isFavorite ? 'icon_favorite_fillable' : 'icon_favorite_non_fillable';
+
+                                  if (state is LoadedFavouriteState && state.items.any((fav) => fav.id == productItem.id)) {
+                                    imageName = 'icon_favorite_fillable';
+                                  }else{
+                                    imageName = 'icon_favorite_non_fillable';
+                                  }
+
+                                return CommonSVGIcon(
+                                  height: 24,
+                                  width: 24,
+                                  imageName: imageName,
+                                  imagePath: 'icon',
+                                  color: AppThemeColor.primaryColor,
                                 );
-                                favouriteBloc?.add(AddRemoveFavouriteEvent(newItem));
                               },
-                              child: BlocBuilder<FavouriteBloc, FavouriteState>(
-                                builder: (context, state) {
-                                  //bool isFavorite = false;
-                                  String imageName;
-
-                                  //if (state is LoadedFavouriteState) {
-                                  //isFavorite = state.items.any((item) => item.id == productItem.id);
-                                  //debugPrint("Favorite status for ${productItem.title}: $isFavorite");
-                                  //}
-                                  //String imageName = isFavorite ? 'icon_favorite_fillable' : 'icon_favorite_non_fillable';
-
-                                    if (state is LoadedFavouriteState && state.items.any((fav) => fav.id == productItem.id)) {
-                                      imageName = 'icon_favorite_fillable';
-                                    }else{
-                                      imageName = 'icon_favorite_non_fillable';
-                                    }
-
-                                  return CommonSVGIcon(
-                                    height: 24,
-                                    width: 24,
-                                    imageName: imageName,
-                                    imagePath: 'icon',
-                                    color: AppThemeColor.primaryColor,
-                                  );
-                                },
-                              ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(
